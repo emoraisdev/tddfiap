@@ -31,7 +31,7 @@ public class Mensagem {
 	private String conteudo;
 
 	@Builder.Default
-	private LocalDateTime dataCriacaoMensagem = LocalDateTime.now();
+	private LocalDateTime dataCriacao = LocalDateTime.now();
 	
 	@Builder.Default
 	private int gostei = 0;
