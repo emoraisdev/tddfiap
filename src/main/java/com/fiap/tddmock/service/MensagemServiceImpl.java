@@ -4,10 +4,9 @@ import com.fiap.tddmock.exception.MensagemNotFoundException;
 import com.fiap.tddmock.model.Mensagem;
 import com.fiap.tddmock.repository.MensagemRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -43,11 +42,15 @@ public class MensagemServiceImpl implements MensagemService{
 
     @Override
     public boolean removerMensagem(UUID id) {
-        return false;
+
+        buscarMensagem(id);
+        repo.deleteById(id);
+
+        return true;
     }
 
     @Override
-    public List<Mensagem> listarMensagem() {
-        return null;
+    public Page<Mensagem> listarMensagens(Pageable pageable) {
+        return repo.listarMensagens(pageable);
     }
 }

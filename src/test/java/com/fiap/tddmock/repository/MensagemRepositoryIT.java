@@ -2,6 +2,7 @@ package com.fiap.tddmock.repository;
 
 import com.fiap.tddmock.AppTddMock;
 import com.fiap.tddmock.model.Mensagem;
+import com.fiap.tddmock.utils.MensagemHelper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+import static com.fiap.tddmock.utils.MensagemHelper.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(classes = AppTddMock.class)
 @AutoConfigureTestDatabase
 @Transactional
-public class MensagemRepositoryIT {
+class MensagemRepositoryIT {
 
     @Autowired
     private MensagemRepository repo;
@@ -25,7 +27,7 @@ public class MensagemRepositoryIT {
     void devePermitirCriarTabela(){
         var totalRegistros = repo.count();
 
-        assertThat(totalRegistros).isGreaterThan(0);
+        assertThat(totalRegistros).isPositive();
     }
 
     @Test
@@ -86,10 +88,6 @@ public class MensagemRepositoryIT {
         var resultados = repo.findAll();
 
         assertThat(resultados).hasSizeGreaterThan(0);
-    }
-
-    private Mensagem gerarMensagem() {
-        return Mensagem.builder().usuario("Maria").conteudo("Conteúdo teste").build();
     }
 
     private Mensagem criarMensagem(Mensagem mensagem) {

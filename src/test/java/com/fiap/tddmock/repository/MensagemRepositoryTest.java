@@ -1,9 +1,11 @@
 package com.fiap.tddmock.repository;
 
+import static com.fiap.tddmock.utils.MensagemHelper.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+import com.fiap.tddmock.utils.MensagemHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +19,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
-public class MensagemRepositoryTest {
+class MensagemRepositoryTest {
 
 	@Mock
 	private MensagemRepository repo;
@@ -110,7 +112,4 @@ public class MensagemRepositoryTest {
 		verify(repo, times(1)).findAll();
 	}
 
-	private Mensagem gerarMensagem() {
-		return Mensagem.builder().usuario("Maria").conteudo("Conteúdo teste").build();
-	}
 }
