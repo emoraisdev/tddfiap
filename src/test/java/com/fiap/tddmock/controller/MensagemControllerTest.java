@@ -1,33 +1,41 @@
 package com.fiap.tddmock.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fiap.tddmock.AppTddMock;
+import com.fiap.tddmock.config.ApplicationConfig;
 import com.fiap.tddmock.exception.MensagemNotFoundException;
 import com.fiap.tddmock.model.Mensagem;
 import com.fiap.tddmock.service.MensagemService;
-import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.UUID;
 
 import static com.fiap.tddmock.utils.MensagemHelper.asJsonString;
 import static com.fiap.tddmock.utils.MensagemHelper.gerarMensagem;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.not;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class MensagemControllerTest {
@@ -48,7 +56,8 @@ public class MensagemControllerTest {
                 .addFilter((request, response, chain) -> {
                     response.setCharacterEncoding("UTF-8");
                     chain.doFilter(request, response);
-                }).build();
+                })
+                .build();
     }
 
     @AfterEach
@@ -223,7 +232,46 @@ public class MensagemControllerTest {
     class ListarMensagem {
 
         @Test
-        void devePermitirListarMensagem() {
+        void devePermitirListarMensagem() throws Exception {
+
+            //Arrange
+            var page = new PageImpl<>(Arrays.asList(gerarMensagem()), PageRequest.of(0, 10), 1);
+
+            when(service.listarMensagens(any(Pageable.class)))
+                    .thenReturn(page);
+
+            //Act
+            mockMvc.perform(get("/mensagens")
+                            .param("page", "0")
+                            .param("size", "10")
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andDo(MockMvcResultHandlers.print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.content", not(empty())))
+                    .andExpect(jsonPath("$.totalPages").value(1))
+                    .andExpect(jsonPath("$.totalElements").value(1));
+
+            verify(service, times(1)).listarMensagens(any(Pageable.class));
+
+        }
+
+        @Test
+        void devePermitirListarMensagem_QuandoNaoInformadoPaginacao() throws Exception {
+
+            //Arrange
+            var page = new PageImpl<>(Arrays.asList(gerarMensagem()), PageRequest.of(0, 10), 1);
+
+            when(service.listarMensagens(any(Pageable.class)))
+                    .thenReturn(page);
+
+            //Act
+            mockMvc.perform(get("/mensagens"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.content", not(empty())))
+                    .andExpect(jsonPath("$.totalPages").value(1))
+                    .andExpect(jsonPath("$.totalElements").value(1));
+
+            verify(service, times(1)).listarMensagens(any(Pageable.class));
 
         }
 

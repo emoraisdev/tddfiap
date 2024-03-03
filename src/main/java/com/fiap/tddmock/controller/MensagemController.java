@@ -1,9 +1,12 @@
 package com.fiap.tddmock.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fiap.tddmock.exception.MensagemNotFoundException;
 import com.fiap.tddmock.model.Mensagem;
 import com.fiap.tddmock.service.MensagemService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -58,10 +61,22 @@ public class MensagemController {
     public ResponseEntity<?> remover(@PathVariable String id) {
 
         try {
-            var isRemovido = service.removerMensagem(UUID.fromString(id));
+            service.removerMensagem(UUID.fromString(id));
             return new ResponseEntity<>("Mensagem Removida", HttpStatus.OK);
         } catch (MensagemNotFoundException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
+    }
+
+    @GetMapping(
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Page<Mensagem>> listar(@RequestParam(defaultValue = "0") int page,
+                                                 @RequestParam(defaultValue = "10") int size) throws JsonProcessingException {
+
+        var pageable = PageRequest.of(page, size);
+        var mensagens = service.listarMensagens(pageable);
+
+        return new ResponseEntity<>(mensagens, HttpStatus.OK);
     }
 }
