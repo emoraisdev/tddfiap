@@ -21,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -33,9 +34,11 @@ import static com.fiap.tddmock.utils.MensagemHelper.asJsonString;
 import static com.fiap.tddmock.utils.MensagemHelper.gerarMensagem;
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
+import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 import static org.hamcrest.Matchers.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("test")
 public class MensagemControllerIT {
 
     @Autowired
@@ -71,7 +74,9 @@ public class MensagemControllerIT {
                     .post("/mensagens")
                     .then()
 //                    .log().all()
-                    .statusCode(HttpStatus.CREATED.value());
+                    .statusCode(HttpStatus.CREATED.value())
+                    .body(matchesJsonSchemaInClasspath(
+                            "schema/mensagem.schema.json"));
         }
 
         @Test
@@ -85,11 +90,10 @@ public class MensagemControllerIT {
                     .when()
                     .post("/mensagens")
                     .then()
+                    .log().all()
                     .statusCode(HttpStatus.BAD_REQUEST.value())
-                    .body("$", hasKey("timestamp"))
-                    .body("$", hasKey("status"))
-                    .body("$", hasKey("error"))
-                    .body("$", hasKey("path"))
+                    .body(matchesJsonSchemaInClasspath(
+                            "schema/error.schema.json"))
                     .body("error", equalTo("Bad Request"))
                     .body("path", equalTo("/mensagens"));
         }
@@ -125,24 +129,40 @@ public class MensagemControllerIT {
         @Test
         void devePermitirAlterarMensagem() throws Exception {
 
-            //Arrange
-            var id = UUID.fromString("150f80ba-5f1c-4e93-9cac-080e0bbf8ef0");
-            var mensagem = gerarMensagem();
-            mensagem.setId(id);
+            var id = UUID.fromString("1960d23e-52f9-4251-8605-b396791685f2");
+            var mensagem = Mensagem.builder()
+                    .id(id)
+                    .conteudo("Teste Alteracao")
+                    .usuario("Mary").build();
+
+            given()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(mensagem)
+            .when()
+                    .put("/mensagens")
+            .then()
+                    .statusCode(HttpStatus.ACCEPTED.value())
+                    .body(matchesJsonSchemaInClasspath(
+                            "schema/mensagem.schema.json"));
         }
 
         @Test
         void deveGerarExcecao_QuandoAlterarMensagem_IdNaoExiste() throws Exception {
 
-            //Arrange
-            var id = UUID.fromString("150f80ba-5f1c-4e93-9cac-080e0bbf8ef0");
-            var mensagem = gerarMensagem();
-            mensagem.setId(id);
-        }
+            var id = UUID.fromString("1960d23e-52f9-4251-8605-b396791685f1");
+            var mensagem = Mensagem.builder()
+                    .id(id)
+                    .conteudo("Teste Alteracao")
+                    .usuario("Mary").build();
 
-        @Test
-        void deveGerarExcecao_QuandoAlterarMensagem_AlterarPayloadComXML() throws Exception {
-            //Act
+            given()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(mensagem)
+            .when()
+                    .put("/mensagens")
+            .then()
+                    .statusCode(HttpStatus.BAD_REQUEST.value())
+                    .body(equalTo("Registro não encontrado"));
         }
     }
 
@@ -151,15 +171,29 @@ public class MensagemControllerIT {
 
         @Test
         void devePermitirRemoverMensagem() throws Exception {
-            //Arrange
-            var id = UUID.fromString("150f80ba-5f1c-4e93-9cac-080e0bbf8ef0");
 
+            var id = UUID.fromString("1e9d37f1-148c-49f6-b248-fecfe71e0333");
+
+            given()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+                    .delete("/mensagens/{id}", id)
+            .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .body(equalTo("Mensagem Removida"));
         }
 
         @Test
         void deveGerarExcecao_QuandoRemoverMensagem_IdNaoExiste() throws Exception {
-            //Arrange
-            var id = UUID.fromString("150f80ba-5f1c-4e93-9cac-080e0bbf8ef0");
+            var id = UUID.fromString("1e9d37f1-148c-49f6-b248-fecfe71e0332");
+
+            given()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+                    .delete("/mensagens/{id}", id)
+            .then()
+                    .statusCode(HttpStatus.BAD_REQUEST.value())
+                    .body(equalTo("Registro não encontrado"));
         }
     }
 
@@ -169,16 +203,36 @@ public class MensagemControllerIT {
         @Test
         void devePermitirListarMensagem() throws Exception {
 
-            //Arrange
-            var page = new PageImpl<>(Arrays.asList(gerarMensagem()), PageRequest.of(0, 10), 1);
-
+            given()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .queryParams("page","0")
+                    .queryParams("size","10")
+                    .when()
+                    .get("/mensagens")
+                    .then()
+                    .log().all()
+                    .statusCode(HttpStatus.OK.value())
+                    .body(matchesJsonSchemaInClasspath("schema/listamensagens.schema.json"));
         }
 
         @Test
         void devePermitirListarMensagem_QuandoNaoInformadoPaginacao() throws Exception {
 
             //Arrange
-            var page = new PageImpl<>(Arrays.asList(gerarMensagem()), PageRequest.of(0, 10), 1);
+//            var page = new PageImpl<>(Arrays.asList(gerarMensagem()), PageRequest.of(0, 10), 1);
+//
+//            var id = UUID.fromString("1e9d37f1-148c-49f6-b248-fecfe71e0332");
+
+            given()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+//                    .pathParams("page","0")
+//                    .pathParams("size","10")
+            .when()
+                    .get("/mensagens")
+            .then()
+                    .log().all()
+                    .statusCode(HttpStatus.OK.value())
+                    .body(matchesJsonSchemaInClasspath("schema/listamensagens.schema.json"));
 
         }
 

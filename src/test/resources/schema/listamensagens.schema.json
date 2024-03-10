@@ -1,0 +1,388 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "$id": "http://example.com/example.json",
+  "type": "object",
+  "default": {},
+  "title": "Root Schema",
+  "required": [
+    "content",
+    "pageable",
+    "totalPages",
+    "totalElements",
+    "last",
+    "size",
+    "number",
+    "sort",
+    "numberOfElements",
+    "first",
+    "empty"
+  ],
+  "properties": {
+    "content": {
+      "type": "array",
+      "default": [],
+      "title": "The content Schema",
+      "items": {
+        "type": "object",
+        "title": "A Schema",
+        "required": [
+          "id",
+          "usuario",
+          "conteudo",
+          "dataCriacao",
+          "gostei"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "The id Schema",
+            "examples": [
+              "1960d23e-52f9-4251-8605-b396791685f2",
+              "1e9d37f1-148c-49f6-b248-fecfe71e0333",
+              "89608d39-3416-45dd-8652-4719bb98352b"
+            ]
+          },
+          "usuario": {
+            "type": "string",
+            "title": "The usuario Schema",
+            "examples": [
+              "Mary",
+              "John",
+              "Adam"
+            ]
+          },
+          "conteudo": {
+            "type": "string",
+            "title": "The conteudo Schema",
+            "examples": [
+              "Conteúdo da mensagem 03",
+              "Conteúdo da mensagem 02",
+              "Conteúdo da mensagem 01"
+            ]
+          },
+          "dataCriacao": {
+            "type": "string",
+            "title": "The dataCriacao Schema",
+            "examples": [
+              "2023-01-17T00:00:03.1",
+              "2023-01-16T00:00:02.1",
+              "2023-01-15T00:00:01.1"
+            ]
+          },
+          "gostei": {
+            "type": "integer",
+            "title": "The gostei Schema",
+            "examples": [
+              0
+            ]
+          }
+        },
+        "examples": [{
+          "id": "1960d23e-52f9-4251-8605-b396791685f2",
+          "usuario": "Mary",
+          "conteudo": "Conteúdo da mensagem 03",
+          "dataCriacao": "2023-01-17T00:00:03.1",
+          "gostei": 0
+        },
+          {
+            "id": "1e9d37f1-148c-49f6-b248-fecfe71e0333",
+            "usuario": "John",
+            "conteudo": "Conteúdo da mensagem 02",
+            "dataCriacao": "2023-01-16T00:00:02.1",
+            "gostei": 0
+          },
+          {
+            "id": "89608d39-3416-45dd-8652-4719bb98352b",
+            "usuario": "Adam",
+            "conteudo": "Conteúdo da mensagem 01",
+            "dataCriacao": "2023-01-15T00:00:01.1",
+            "gostei": 0
+          }]
+      },
+      "examples": [
+        [{
+          "id": "1960d23e-52f9-4251-8605-b396791685f2",
+          "usuario": "Mary",
+          "conteudo": "Conteúdo da mensagem 03",
+          "dataCriacao": "2023-01-17T00:00:03.1",
+          "gostei": 0
+        },
+          {
+            "id": "1e9d37f1-148c-49f6-b248-fecfe71e0333",
+            "usuario": "John",
+            "conteudo": "Conteúdo da mensagem 02",
+            "dataCriacao": "2023-01-16T00:00:02.1",
+            "gostei": 0
+          },
+          {
+            "id": "89608d39-3416-45dd-8652-4719bb98352b",
+            "usuario": "Adam",
+            "conteudo": "Conteúdo da mensagem 01",
+            "dataCriacao": "2023-01-15T00:00:01.1",
+            "gostei": 0
+          }]
+      ]
+    },
+    "pageable": {
+      "type": "object",
+      "default": {},
+      "title": "The pageable Schema",
+      "required": [
+        "pageNumber",
+        "pageSize",
+        "sort",
+        "offset",
+        "unpaged",
+        "paged"
+      ],
+      "properties": {
+        "pageNumber": {
+          "type": "integer",
+          "default": 0,
+          "title": "The pageNumber Schema",
+          "examples": [
+            0
+          ]
+        },
+        "pageSize": {
+          "type": "integer",
+          "default": 0,
+          "title": "The pageSize Schema",
+          "examples": [
+            10
+          ]
+        },
+        "sort": {
+          "type": "object",
+          "default": {},
+          "title": "The sort Schema",
+          "required": [
+            "sorted",
+            "empty",
+            "unsorted"
+          ],
+          "properties": {
+            "sorted": {
+              "type": "boolean",
+              "default": false,
+              "title": "The sorted Schema",
+              "examples": [
+                false
+              ]
+            },
+            "empty": {
+              "type": "boolean",
+              "default": false,
+              "title": "The empty Schema",
+              "examples": [
+                true
+              ]
+            },
+            "unsorted": {
+              "type": "boolean",
+              "default": false,
+              "title": "The unsorted Schema",
+              "examples": [
+                true
+              ]
+            }
+          },
+          "examples": [{
+            "sorted": false,
+            "empty": true,
+            "unsorted": true
+          }]
+        },
+        "offset": {
+          "type": "integer",
+          "default": 0,
+          "title": "The offset Schema",
+          "examples": [
+            0
+          ]
+        },
+        "unpaged": {
+          "type": "boolean",
+          "default": false,
+          "title": "The unpaged Schema",
+          "examples": [
+            false
+          ]
+        },
+        "paged": {
+          "type": "boolean",
+          "default": false,
+          "title": "The paged Schema",
+          "examples": [
+            true
+          ]
+        }
+      },
+      "examples": [{
+        "pageNumber": 0,
+        "pageSize": 10,
+        "sort": {
+          "sorted": false,
+          "empty": true,
+          "unsorted": true
+        },
+        "offset": 0,
+        "unpaged": false,
+        "paged": true
+      }]
+    },
+    "totalPages": {
+      "type": "integer",
+      "default": 0,
+      "title": "The totalPages Schema",
+      "examples": [
+        1
+      ]
+    },
+    "totalElements": {
+      "type": "integer",
+      "default": 0,
+      "title": "The totalElements Schema",
+      "examples": [
+        3
+      ]
+    },
+    "last": {
+      "type": "boolean",
+      "default": false,
+      "title": "The last Schema",
+      "examples": [
+        true
+      ]
+    },
+    "size": {
+      "type": "integer",
+      "default": 0,
+      "title": "The size Schema",
+      "examples": [
+        10
+      ]
+    },
+    "number": {
+      "type": "integer",
+      "default": 0,
+      "title": "The number Schema",
+      "examples": [
+        0
+      ]
+    },
+    "sort": {
+      "type": "object",
+      "default": {},
+      "title": "The sort Schema",
+      "required": [
+        "sorted",
+        "empty",
+        "unsorted"
+      ],
+      "properties": {
+        "sorted": {
+          "type": "boolean",
+          "default": false,
+          "title": "The sorted Schema",
+          "examples": [
+            false
+          ]
+        },
+        "empty": {
+          "type": "boolean",
+          "default": false,
+          "title": "The empty Schema",
+          "examples": [
+            true
+          ]
+        },
+        "unsorted": {
+          "type": "boolean",
+          "default": false,
+          "title": "The unsorted Schema",
+          "examples": [
+            true
+          ]
+        }
+      },
+      "examples": [{
+        "sorted": false,
+        "empty": true,
+        "unsorted": true
+      }]
+    },
+    "numberOfElements": {
+      "type": "integer",
+      "default": 0,
+      "title": "The numberOfElements Schema",
+      "examples": [
+        3
+      ]
+    },
+    "first": {
+      "type": "boolean",
+      "default": false,
+      "title": "The first Schema",
+      "examples": [
+        true
+      ]
+    },
+    "empty": {
+      "type": "boolean",
+      "default": false,
+      "title": "The empty Schema",
+      "examples": [
+        false
+      ]
+    }
+  },
+  "examples": [{
+    "content": [{
+      "id": "1960d23e-52f9-4251-8605-b396791685f2",
+      "usuario": "Mary",
+      "conteudo": "Conteúdo da mensagem 03",
+      "dataCriacao": "2023-01-17T00:00:03.1",
+      "gostei": 0
+    },
+      {
+        "id": "1e9d37f1-148c-49f6-b248-fecfe71e0333",
+        "usuario": "John",
+        "conteudo": "Conteúdo da mensagem 02",
+        "dataCriacao": "2023-01-16T00:00:02.1",
+        "gostei": 0
+      },
+      {
+        "id": "89608d39-3416-45dd-8652-4719bb98352b",
+        "usuario": "Adam",
+        "conteudo": "Conteúdo da mensagem 01",
+        "dataCriacao": "2023-01-15T00:00:01.1",
+        "gostei": 0
+      }],
+    "pageable": {
+      "pageNumber": 0,
+      "pageSize": 10,
+      "sort": {
+        "sorted": false,
+        "empty": true,
+        "unsorted": true
+      },
+      "offset": 0,
+      "unpaged": false,
+      "paged": true
+    },
+    "totalPages": 1,
+    "totalElements": 3,
+    "last": true,
+    "size": 10,
+    "number": 0,
+    "sort": {
+      "sorted": false,
+      "empty": true,
+      "unsorted": true
+    },
+    "numberOfElements": 3,
+    "first": true,
+    "empty": false
+  }]
+}

@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
@@ -31,6 +32,7 @@ import static org.mockito.Mockito.times;
 @SpringBootTest
 @AutoConfigureTestDatabase
 @Transactional
+@ActiveProfiles("test")
 class MensagemServiceIT {
 
     @Autowired

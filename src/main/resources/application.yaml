@@ -1,16 +1,11 @@
+server:
+  port: 8080
 spring:
- datasource:
-  url: jdbc:h2:mem:testdb
-  username: root
-  password: 123
-  driverClassname: org.h2.Driver
- jpa:
-  database: h2
-  database-platform: org.hibernate.dialect.H2Dialect
-  #Utilizar apenas para desenvolvimento
-  defer-datasource-initialization: true
-  hibernate:
-   ddl-auto: create-drop
- h2:
-  console:
-   enabled: true
+  datasource:
+    url: jdbc:mysql://localhost:3306/tddmock
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
